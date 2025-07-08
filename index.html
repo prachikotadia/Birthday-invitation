@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ashi's Sweet Sixteen 💜 | July 12th Birthday Bash</title>
+    <meta name="description" content="Join Ashi for the most magical Sweet Sixteen celebration ever! K-pop vibes, purple queen energy, and unforgettable memories await." />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        cursor: none;
+        scroll-behavior: smooth;
+      }
+      
+      /* Custom cursor */
+      * {
+        cursor: none !important;
+      }
+      
+      /* Custom cursor styles */
+      .cursor {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: linear-gradient(45deg, #f06292, #9c27b0);
+        position: fixed;
+        pointer-events: none;
+        z-index: 9999;
+        transition: transform 0.1s ease;
+      }
+      
+      .cursor-trail {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.6);
+        position: fixed;
+        pointer-events: none;
+        z-index: 9998;
+      }
+      
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      
+      .animate-fadeIn {
+        animation: fadeIn 0.8s ease-out;
+      }
+      
+      @keyframes shimmer {
+        0% { background-position: -200px 0; }
+        100% { background-position: 200px 0; }
+      }
+      
+      .shimmer {
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+        background-size: 200px 100%;
+        animation: shimmer 2s infinite;
+      }
+      
+      /* Mobile optimizations */
+      @media (max-width: 768px) {
+        body {
+          font-size: 14px;
+        }
+        
+        .cursor {
+          display: none;
+        }
+        
+        * {
+          cursor: auto !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    
+    <script>
+      // Custom cursor implementation
+      document.addEventListener('DOMContentLoaded', function() {
+        // Only show custom cursor on desktop
+        if (window.innerWidth > 768) {
+          const cursor = document.createElement('div');
+          cursor.className = 'cursor';
+          document.body.appendChild(cursor);
+          
+          document.addEventListener('mousemove', function(e) {
+            cursor.style.left = e.clientX - 10 + 'px';
+            cursor.style.top = e.clientY - 10 + 'px';
+          });
+          
+          // Hide cursor when mouse leaves window
+          document.addEventListener('mouseleave', function() {
+            cursor.style.opacity = '0';
+          });
+          
+          document.addEventListener('mouseenter', function() {
+            cursor.style.opacity = '1';
+          });
+          
+          // Scale cursor on click
+          document.addEventListener('mousedown', function() {
+            cursor.style.transform = 'scale(0.8)';
+          });
+          
+          document.addEventListener('mouseup', function() {
+            cursor.style.transform = 'scale(1)';
+          });
+        }
+      });
+    </script>
+  </body>
+</html>
+      });
+    </script>
+  </body>
+</html>
