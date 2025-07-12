@@ -1,129 +1,68 @@
 import React, { useState } from 'react';
-import { MapPin, Copy, Clock, Navigation } from 'lucide-react';
+import { MapPin, Calendar, Clock, Copy, Navigation } from 'lucide-react';
+
+const VENUE = "Royal Albert's Palace";
+const ADDRESS = "1050 King Georges Post Rd, Fords, NJ 08863";
+const DATE = "07/12/2025";
+const TIME = "6:00 PM";
+const GOOGLE_MAPS_URL = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ADDRESS)}`;
 
 const PartyLocation = () => {
   const [copied, setCopied] = useState(false);
-  const address = "123 Rainbow Avenue, Dreamland District, Magic City 90210";
 
   const copyAddress = () => {
-    navigator.clipboard.writeText(address);
+    navigator.clipboard.writeText(ADDRESS);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
   return (
-    <section className="py-20 bg-gradient-to-b from-purple-900 to-indigo-900 relative overflow-hidden">
-      {/* Background Effects */}
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=%22120%22 height=%22120%22 viewBox=%220 0 120 120%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg fill=%22%23ffffff%22 fill-opacity=%220.02%22%3E%3Cpath d=%22M60 60L0 0h120v120L60 60z%22/%3E%3C/g%3E%3C/svg%3E')] opacity-20"></div>
-      
-      <div className="container mx-auto px-8 relative z-10">
-        <div className="text-center mb-16">
-          <h2 className="text-5xl font-bold text-white mb-4 bg-gradient-to-r from-pink-300 to-purple-300 bg-clip-text text-transparent">
-            📍 Party Location 📍
-          </h2>
-          <p className="text-xl text-white/80">Where the magic happens! Don't miss out! ✨</p>
-        </div>
-
-        <div className="max-w-4xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Map Section */}
-            <div className="group">
-              <div className="backdrop-blur-xl bg-white/10 rounded-3xl p-8 shadow-2xl border border-white/20 hover:bg-white/15 transition-all duration-300 relative overflow-hidden">
-                {/* Glow Effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-500"></div>
-                
-                {/* Mock Map */}
-                <div className="relative h-64 bg-gradient-to-br from-blue-400 to-purple-500 rounded-2xl overflow-hidden">
-                  <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=%2240%22 height=%2240%22 viewBox=%220 0 40 40%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg fill=%22%23ffffff%22 fill-opacity=%220.1%22%3E%3Cpath d=%22M20 20h20v20H20z%22/%3E%3C/g%3E%3C/svg%3E')] opacity-30"></div>
-                  
-                  {/* Pulsing Location Pin */}
-                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                    <div className="relative">
-                      <div className="absolute inset-0 bg-pink-300 rounded-full animate-ping opacity-75"></div>
-                      <div className="relative bg-pink-500 rounded-full p-3 shadow-lg">
-                        <MapPin className="w-8 h-8 text-white" />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Map Grid Lines */}
-                  <div className="absolute inset-0 bg-grid-white/10 opacity-20"></div>
-                </div>
-
-                {/* Map Info */}
-                <div className="mt-6 text-center">
-                  <p className="text-white/80 text-sm mb-2">🎉 Sweet Sixteen Venue 🎉</p>
-                  <div className="flex items-center justify-center gap-2">
-                    <Navigation className="w-4 h-4 text-purple-300" />
-                    <span className="text-white/70 text-sm">Interactive Map Available</span>
-                  </div>
-                </div>
-              </div>
+    <section className="py-16 bg-gradient-to-b from-purple-100 to-pink-100 dark:from-purple-900 dark:to-pink-900 transition-all duration-700">
+      <div className="container mx-auto px-4 max-w-3xl text-center">
+        <h2 className="text-3xl md:text-4xl font-bold mb-6 bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
+          🎉 Party Location 🎉
+        </h2>
+        <div className="bg-white/80 dark:bg-white/10 rounded-2xl shadow-lg p-6 md:p-10 border border-purple-200 dark:border-white/10 mx-auto">
+          <h3 className="text-xl md:text-2xl font-semibold text-purple-900 dark:text-white mb-2 flex items-center justify-center gap-2">
+            <MapPin className="w-6 h-6 text-pink-500" /> {VENUE}
+          </h3>
+          <div className="flex flex-col md:flex-row items-center justify-center gap-2 mb-4">
+            <span className="text-lg md:text-xl text-purple-700 dark:text-purple-200 flex items-center gap-2">
+              <MapPin className="w-5 h-5 text-purple-400" />
+              {ADDRESS}
+            </span>
+            <button
+              onClick={copyAddress}
+              className="ml-2 px-3 py-1 rounded-lg bg-gradient-to-r from-pink-400 to-purple-400 text-white text-xs font-semibold flex items-center gap-1 hover:scale-105 transition"
+              title="Copy address"
+            >
+              <Copy className="w-4 h-4" />
+              {copied ? 'Copied!' : 'Copy'}
+            </button>
+          </div>
+          <div className="flex flex-col md:flex-row items-center justify-center gap-4 mt-4 mb-6">
+            <div className="bg-gradient-to-r from-pink-400 to-purple-400 text-white rounded-xl px-6 py-3 font-bold text-lg md:text-xl shadow-md flex items-center gap-2">
+              <Calendar className="w-5 h-5" /> {DATE}
             </div>
-
-            {/* Location Details */}
-            <div className="space-y-6">
-              {/* Address Card */}
-              <div className="backdrop-blur-xl bg-white/10 rounded-3xl p-8 shadow-2xl border border-white/20 hover:bg-white/15 transition-all duration-300 group">
-                <div className="flex items-start gap-4">
-                  <div className="bg-pink-500 rounded-full p-3 group-hover:scale-110 transition-transform duration-300">
-                    <MapPin className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-xl font-bold text-white mb-2">Venue Address</h3>
-                    <p className="text-white/80 text-lg leading-relaxed mb-4">
-                      {address}
-                    </p>
-                    <button
-                      onClick={copyAddress}
-                      className="flex items-center gap-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white px-6 py-3 rounded-xl hover:from-pink-600 hover:to-purple-600 transition-all duration-300 hover:scale-105 group"
-                    >
-                      <Copy className="w-4 h-4" />
-                      <span>{copied ? 'Copied!' : 'Copy Address'}</span>
-                      {copied && (
-                        <div className="absolute inset-0 bg-white/20 rounded-xl animate-ping"></div>
-                      )}
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Party Details */}
-              <div className="backdrop-blur-xl bg-white/10 rounded-3xl p-8 shadow-2xl border border-white/20 hover:bg-white/15 transition-all duration-300 group">
-                <div className="flex items-start gap-4">
-                  <div className="bg-purple-500 rounded-full p-3 group-hover:scale-110 transition-transform duration-300">
-                    <Clock className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-xl font-bold text-white mb-2">Party Schedule</h3>
-                    <div className="space-y-3 text-white/80">
-                      <div className="flex justify-between">
-                        <span>🎵 Pre-party Music</span>
-                        <span>6:00 PM</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>🎂 Birthday Celebration</span>
-                        <span>7:30 PM</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>💃 Dance Party</span>
-                        <span>8:00 PM</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>🌟 Magical Surprises</span>
-                        <span>All Night!</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Directions Note */}
-              <div className="backdrop-blur-xl bg-white/10 rounded-3xl p-6 shadow-2xl border border-white/20 text-center">
-                <p className="text-white/80 text-sm">
-                  💜 Free parking available • Easy access via Rainbow Metro Line 💜
-                </p>
-              </div>
+            <div className="bg-gradient-to-r from-purple-400 to-pink-400 text-white rounded-xl px-6 py-3 font-bold text-lg md:text-xl shadow-md flex items-center gap-2">
+              <Clock className="w-5 h-5" /> {TIME}
+            </div>
+          </div>
+          <a
+            href={GOOGLE_MAPS_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold text-lg shadow-lg hover:scale-110 hover:shadow-pink-400/40 focus:scale-110 focus:shadow-pink-400/40 transition mb-6"
+          >
+            <Navigation className="w-5 h-5 animate-bounce" /> Get Directions
+          </a>
+          <div className="rounded-xl overflow-hidden shadow-lg border border-purple-200 dark:border-white/10 mt-6 flex items-center justify-center">
+            {/* Interactive static map placeholder */}
+            <div className="relative w-full h-64 bg-gradient-to-br from-purple-200 to-pink-200 dark:from-purple-900 dark:to-pink-900 flex items-center justify-center group cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+              <MapPin className="w-20 h-20 text-pink-500 drop-shadow-lg animate-pulse group-hover:scale-125 group-hover:text-purple-600 transition-all duration-300" />
+              <span className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white/80 dark:bg-white/10 px-4 py-2 rounded-xl text-purple-700 dark:text-purple-200 text-lg font-semibold shadow-md group-hover:bg-pink-100 group-hover:text-pink-700 transition-all duration-300">
+                {VENUE}
+              </span>
             </div>
           </div>
         </div>

@@ -33,7 +33,7 @@ const AboutAshi = () => {
                 <div className="relative inline-block group">
                   <div className="absolute inset-0 bg-gradient-to-r from-pink-400 to-purple-400 rounded-full blur-lg opacity-50 group-hover:opacity-75 transition-opacity duration-300"></div>
                   <img
-                    src="https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=300&h=300"
+                    src="dist\Ashis's Photo\Ashi Sweet 16\Screenshot 2025-07-12 141328.png"
                     alt="Ashi"
                     className="relative w-48 h-48 md:w-56 md:h-56 rounded-full object-cover border-4 border-white/20 shadow-2xl group-hover:scale-105 transition-transform duration-300"
                   />
@@ -82,9 +82,7 @@ const AboutAshi = () => {
                     <p className="mb-4">
                       Hey beautiful souls! 💜 I can't believe I'm turning 16! This feels like such a magical milestone, and I want to celebrate it with all my favorite people.
                     </p>
-                    <p className="mb-4">
-                      K-pop has been my biggest passion - the music, the choreography, the fashion, everything! Purple has always been my color because it represents creativity, magic, and dreams coming true.
-                    </p>
+                 
                     <p className="mb-4">
                       This party is going to be EPIC! We'll have amazing music, delicious cake, and so many surprises. I can't wait to dance the night away with you all! 💃✨
                     </p>

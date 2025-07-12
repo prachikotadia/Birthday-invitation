@@ -5,14 +5,12 @@ import MusicPlayer from './components/MusicPlayer';
 import HeroSection from './components/HeroSection';
 import AboutAshi from './components/AboutAshi';
 import ParentsSection from './components/ParentsSection';
-import AlbumWall from './components/AlbumWall';
-import PhotoGallery from './components/PhotoGallery';
-import InteractiveGuestSection from './components/InteractiveGuestSection';
+import MemoryMovie from './components/MemoryMovie';
 import PartyLocation from './components/PartyLocation';
-import CakeSection from './components/CakeSection';
-import Timeline from './components/Timeline';
-import MusicSection from './components/MusicSection';
 import CursorTrail from './components/CursorTrail';
+import BirthdayWishesSection from './components/BirthdayWishesSection';
+import AdminPanel from './components/AdminPanel';
+import MusicAlbumWall from './components/MusicAlbumWall';
 
 function App() {
   const [showScrollButton, setShowScrollButton] = useState(false);
@@ -36,6 +34,7 @@ function App() {
         {/* Fixed UI Elements */}
         <ThemeToggle />
         <MusicPlayer />
+        <AdminPanel />
         
         {/* Cursor Trail Effect */}
         <CursorTrail />
@@ -45,13 +44,13 @@ function App() {
           <HeroSection />
           <AboutAshi />
           <ParentsSection />
-          <AlbumWall />
-          <PhotoGallery />
-          <InteractiveGuestSection />
+          
+          <MemoryMovie />
+          <MusicAlbumWall />
+        
           <PartyLocation />
-          <CakeSection />
-          <Timeline />
-          <MusicSection />
+         
+          
         </main>
 
         {/* Scroll to Top Button */}

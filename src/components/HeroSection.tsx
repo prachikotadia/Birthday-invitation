@@ -49,7 +49,7 @@ const HeroSection = () => {
         <p className={`text-lg md:text-xl lg:text-2xl mb-8 animate-fade-in ${
           isDarkMode ? 'text-white/90' : 'text-purple-800'
         }`}>
-          💜 K-pop Queen's Magical Birthday Bash 💜
+          💜 Queen's Magical Birthday Bash 💜
         </p>
 
         {/* Countdown Timer */}
@@ -67,7 +67,7 @@ const HeroSection = () => {
           }`}>
             Join me for the most magical night ever! 🎉<br />
             <span className={isDarkMode ? 'text-pink-300' : 'text-purple-600'}>
-              July 12th, 2025 • 7:00 PM
+              July 12th, 2025 • 6:00 PM
             </span>
           </p>
         </div>

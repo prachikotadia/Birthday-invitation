@@ -1,57 +1,86 @@
-import React, { useState } from 'react';
-import { Send, Sparkles, Heart, Users } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Send, Sparkles, Heart, Users, AlertCircle } from 'lucide-react';
 import { useTheme } from './ThemeProvider';
-
-interface Guest {
-  id: number;
-  name: string;
-  emoji: string;
-  timestamp: number;
-}
+import { interactionsApi } from '../services/api';
+import { GuestInteraction, supabase } from '../lib/supabase';
 
 const InteractiveGuestSection = () => {
   const [guestName, setGuestName] = useState('');
-  const [guests, setGuests] = useState<Guest[]>([
-    { id: 1, name: "Sarah", emoji: "🥳", timestamp: Date.now() - 300000 },
-    { id: 2, name: "Maya", emoji: "🌸", timestamp: Date.now() - 240000 },
-    { id: 3, name: "Emma", emoji: "🎧", timestamp: Date.now() - 180000 },
-    { id: 4, name: "Zoe", emoji: "🌟", timestamp: Date.now() - 120000 },
-    { id: 5, name: "Lily", emoji: "💃", timestamp: Date.now() - 60000 }
-  ]);
+  const [guests, setGuests] = useState<GuestInteraction[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [newGuestId, setNewGuestId] = useState<number | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const { isDarkMode } = useTheme();
 
   const emojis = ["🥳", "🌸", "🎧", "🌟", "💃", "🎉", "💜", "✨", "🎂", "🎈"];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Load existing interactions and set up real-time subscription
+  useEffect(() => {
+    loadInteractions();
+    setupRealtimeSubscription();
+
+    return () => {
+      // Cleanup subscription on unmount
+      supabase.removeAllChannels();
+    };
+  }, []);
+
+  const loadInteractions = async () => {
+    try {
+      setIsLoading(true);
+      const interactions = await interactionsApi.getRecentInteractions(20);
+      setGuests(interactions);
+    } catch (err) {
+      console.error('Failed to load interactions:', err);
+      setError('Failed to load guest interactions. Please refresh the page.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const setupRealtimeSubscription = () => {
+    const subscription = interactionsApi.subscribeToInteractions((payload) => {
+      if (payload.new) {
+        setGuests(prev => [payload.new, ...prev.slice(0, 19)]); // Keep only 20 most recent
+        setNewGuestId(payload.new.id);
+        setTimeout(() => setNewGuestId(null), 3000);
+      }
+    });
+
+    return subscription;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!guestName.trim()) return;
 
     setIsSubmitting(true);
+    setError(null);
 
-    setTimeout(() => {
+    try {
       const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
-      const newGuest: Guest = {
-        id: guests.length + 1,
+      
+      const newInteraction = await interactionsApi.submitInteraction({
         name: guestName.trim(),
         emoji: randomEmoji,
         timestamp: Date.now()
-      };
+      });
 
-      setGuests(prev => [newGuest, ...prev]);
-      setNewGuestId(newGuest.id);
       setGuestName('');
-      setIsSubmitting(false);
       setShowSuccess(true);
 
       // Reset success message
       setTimeout(() => {
         setShowSuccess(false);
-        setNewGuestId(null);
       }, 3000);
-    }, 1000);
+    } catch (err) {
+      console.error('Failed to submit interaction:', err);
+      setError('Failed to add your name. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -94,6 +123,14 @@ const InteractiveGuestSection = () => {
                 </h3>
               </div>
 
+              {/* Error Message */}
+              {error && (
+                <div className="mb-6 p-4 bg-red-500/20 border border-red-400/30 rounded-xl flex items-center gap-3">
+                  <AlertCircle className="w-5 h-5 text-red-400" />
+                  <span className={`text-sm ${isDarkMode ? 'text-red-200' : 'text-red-700'}`}>{error}</span>
+                </div>
+              )}
+
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
                   <label className={`block text-sm font-medium mb-2 ${
@@ -104,7 +141,10 @@ const InteractiveGuestSection = () => {
                   <input
                     type="text"
                     value={guestName}
-                    onChange={(e) => setGuestName(e.target.value)}
+                    onChange={(e) => {
+                      setGuestName(e.target.value);
+                      if (error) setError(null);
+                    }}
                     placeholder="Enter your name..."
                     className={`w-full px-4 py-4 rounded-xl border transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-pink-300 ${
                       isDarkMode
@@ -165,58 +205,71 @@ const InteractiveGuestSection = () => {
                 </h3>
               </div>
 
-              <div className={`text-center mb-6 p-3 rounded-xl ${
-                isDarkMode ? 'bg-white/5' : 'bg-purple-100/50'
-              }`}>
-                <span className={`text-lg font-semibold ${
-                  isDarkMode ? 'text-white' : 'text-purple-800'
-                }`}>
-                  {guests.length} guests and counting! 🎉
-                </span>
-              </div>
-
-              <div className="space-y-3 max-h-80 overflow-y-auto custom-scrollbar">
-                {guests.map((guest, index) => (
-                  <div
-                    key={guest.id}
-                    className={`p-4 rounded-2xl transition-all duration-500 hover:scale-105 ${
-                      newGuestId === guest.id
-                        ? 'animate-bounce bg-gradient-to-r from-pink-400/20 to-purple-400/20 border-2 border-pink-300'
-                        : isDarkMode
-                        ? 'bg-white/5 hover:bg-white/10 border border-white/10'
-                        : 'bg-purple-50/50 hover:bg-purple-100/50 border border-purple-200'
-                    }`}
-                    style={{
-                      animationDelay: `${index * 0.1}s`,
-                      animation: newGuestId === guest.id ? 'flyIn 0.8s ease-out' : 'none'
-                    }}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="text-2xl animate-pulse">
-                        {guest.emoji}
-                      </div>
-                      <div className="flex-1">
-                        <span className={`font-semibold text-lg ${
-                          isDarkMode ? 'text-white' : 'text-purple-800'
-                        }`}>
-                          {guest.name}
-                        </span>
-                      </div>
-                      {newGuestId === guest.id && (
-                        <div className="flex gap-1">
-                          {[...Array(3)].map((_, i) => (
-                            <div
-                              key={i}
-                              className="w-1 h-1 bg-pink-400 rounded-full animate-ping"
-                              style={{ animationDelay: `${i * 0.2}s` }}
-                            />
-                          ))}
-                        </div>
-                      )}
-                    </div>
+              {isLoading ? (
+                <div className="flex items-center justify-center h-64">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-400"></div>
+                </div>
+              ) : (
+                <>
+                  <div className={`text-center mb-6 p-3 rounded-xl ${
+                    isDarkMode ? 'bg-white/5' : 'bg-purple-100/50'
+                  }`}>
+                    <span className={`text-lg font-semibold ${
+                      isDarkMode ? 'text-white' : 'text-purple-800'
+                    }`}>
+                      {guests.length} guests and counting! 🎉
+                    </span>
                   </div>
-                ))}
-              </div>
+
+                  <div className="space-y-3 max-h-80 overflow-y-auto custom-scrollbar">
+                    {guests.map((guest, index) => (
+                      <div
+                        key={guest.id}
+                        className={`p-4 rounded-2xl transition-all duration-500 hover:scale-105 ${
+                          newGuestId === guest.id
+                            ? 'animate-bounce bg-gradient-to-r from-pink-400/20 to-purple-400/20 border-2 border-pink-300'
+                            : isDarkMode
+                            ? 'bg-white/5 hover:bg-white/10 border border-white/10'
+                            : 'bg-purple-50/50 hover:bg-purple-100/50 border border-purple-200'
+                        }`}
+                        style={{
+                          animationDelay: `${index * 0.1}s`,
+                          animation: newGuestId === guest.id ? 'flyIn 0.8s ease-out' : 'none'
+                        }}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="text-2xl animate-pulse">
+                            {guest.emoji}
+                          </div>
+                          <div className="flex-1">
+                            <span className={`font-semibold text-lg ${
+                              isDarkMode ? 'text-white' : 'text-purple-800'
+                            }`}>
+                              {guest.name}
+                            </span>
+                            <div className={`text-xs mt-1 ${
+                              isDarkMode ? 'text-white/60' : 'text-purple-600'
+                            }`}>
+                              {new Date(guest.created_at).toLocaleTimeString([], { 
+                                hour: '2-digit', 
+                                minute: '2-digit' 
+                              })}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {guests.length === 0 && (
+                    <div className={`text-center py-8 ${
+                      isDarkMode ? 'text-white/60' : 'text-purple-600'
+                    }`}>
+                      <p>Be the first to join the party! 🎉</p>
+                    </div>
+                  )}
+                </>
+              )}
             </div>
           </div>
         </div>

@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import { Send, Sparkles, Heart, User } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Send, Sparkles, Heart, User, AlertCircle } from 'lucide-react';
+import { guestApi } from '../services/api';
+import { Guest } from '../lib/supabase';
 
 const RSVPSection = () => {
   const [formData, setFormData] = useState({
@@ -10,38 +12,67 @@ const RSVPSection = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [guestList, setGuestList] = useState([
-    { id: 1, name: "Sarah Chen", message: "Can't wait to celebrate with you! 💜" },
-    { id: 2, name: "Maya Johnson", message: "This is going to be AMAZING! 🎉" },
-    { id: 3, name: "Emma Rodriguez", message: "Purple queen's big day! So excited!" },
-    { id: 4, name: "Zoe Kim", message: "Ready to dance the night away! 💃" },
-    { id: 5, name: "Lily Thompson", message: "Sweet 16 magic incoming! ✨" }
-  ]);
+  const [guestList, setGuestList] = useState<Guest[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Load existing guests on component mount
+  useEffect(() => {
+    loadGuests();
+  }, []);
+
+  const loadGuests = async () => {
+    try {
+      setIsLoading(true);
+      const guests = await guestApi.getGuests();
+      setGuestList(guests);
+    } catch (err) {
+      console.error('Failed to load guests:', err);
+      setError('Failed to load guest list. Please refresh the page.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.email) return;
 
     setIsSubmitting(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      const newGuest = {
-        id: guestList.length + 1,
+    setError(null);
+
+    try {
+      // Check if email already exists
+      const emailExists = await guestApi.checkEmailExists(formData.email);
+      if (emailExists) {
+        setError('This email has already been registered. Please use a different email.');
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Submit RSVP
+      const newGuest = await guestApi.submitRSVP({
         name: formData.name,
+        email: formData.email,
+        guests_count: parseInt(formData.guests),
         message: formData.message || "Can't wait to celebrate! 🎉"
-      };
-      
-      setGuestList([...guestList, newGuest]);
+      });
+
+      // Add to local state
+      setGuestList([newGuest, ...guestList]);
       setSubmitted(true);
-      setIsSubmitting(false);
       
       // Reset form
       setFormData({ name: '', email: '', guests: '1', message: '' });
       
       // Reset submission state after 3 seconds
       setTimeout(() => setSubmitted(false), 3000);
-    }, 1500);
+    } catch (err) {
+      console.error('Failed to submit RSVP:', err);
+      setError('Failed to submit RSVP. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -49,6 +80,8 @@ const RSVPSection = () => {
       ...formData,
       [e.target.name]: e.target.value
     });
+    // Clear error when user starts typing
+    if (error) setError(null);
   };
 
   return (
@@ -74,6 +107,14 @@ const RSVPSection = () => {
                 </div>
                 <h3 className="text-2xl font-bold text-white">Send Your Magical RSVP</h3>
               </div>
+
+              {/* Error Message */}
+              {error && (
+                <div className="mb-6 p-4 bg-red-500/20 border border-red-400/30 rounded-xl flex items-center gap-3">
+                  <AlertCircle className="w-5 h-5 text-red-400" />
+                  <span className="text-red-200 text-sm">{error}</span>
+                </div>
+              )}
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -172,40 +213,51 @@ const RSVPSection = () => {
                 <h3 className="text-2xl font-bold text-white">Guest Wall</h3>
               </div>
 
-              <div className="space-y-4 max-h-96 overflow-y-auto custom-scrollbar">
-                {guestList.map((guest, index) => (
-                  <div
-                    key={guest.id}
-                    className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-4 hover:bg-white/10 transition-all duration-300 transform hover:scale-105"
-                    style={{
-                      animationDelay: `${index * 0.1}s`,
-                      animation: guest.id === guestList.length ? 'slideInFromRight 0.5s ease-out' : 'none'
-                    }}
-                  >
-                    <div className="flex items-start gap-3">
-                      <div className="bg-gradient-to-r from-pink-400 to-purple-400 rounded-full p-2">
-                        <Heart className="w-4 h-4 text-white" />
+              {isLoading ? (
+                <div className="flex items-center justify-center h-64">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-400"></div>
+                </div>
+              ) : (
+                <>
+                  <div className="space-y-4 max-h-96 overflow-y-auto custom-scrollbar">
+                    {guestList.map((guest, index) => (
+                      <div
+                        key={guest.id}
+                        className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-4 hover:bg-white/10 transition-all duration-300 transform hover:scale-105"
+                        style={{
+                          animationDelay: `${index * 0.1}s`,
+                          animation: guest.id === guestList[0]?.id ? 'slideInFromRight 0.5s ease-out' : 'none'
+                        }}
+                      >
+                        <div className="flex items-start gap-3">
+                          <div className="bg-gradient-to-r from-pink-400 to-purple-400 rounded-full p-2">
+                            <Heart className="w-4 h-4 text-white" />
+                          </div>
+                          <div className="flex-1">
+                            <h4 className="font-semibold text-white text-sm">{guest.name}</h4>
+                            <p className="text-white/70 text-xs mt-1">{guest.message}</p>
+                            <p className="text-white/50 text-xs mt-1">
+                              {guest.guests_count > 1 ? `+${guest.guests_count - 1} guests` : 'Coming solo'}
+                            </p>
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex-1">
-                        <h4 className="font-semibold text-white text-sm">{guest.name}</h4>
-                        <p className="text-white/70 text-xs mt-1">{guest.message}</p>
-                      </div>
-                    </div>
+                    ))}
                   </div>
-                ))}
-              </div>
 
-              <div className="mt-6 text-center">
-                <p className="text-white/60 text-sm">
-                  {guestList.length} magical guests confirmed! 🎉
-                </p>
-              </div>
+                  <div className="mt-6 text-center">
+                    <p className="text-white/60 text-sm">
+                      {guestList.length} magical guests confirmed! 🎉
+                    </p>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         @keyframes slideInFromRight {
           from {
             transform: translateX(100%);

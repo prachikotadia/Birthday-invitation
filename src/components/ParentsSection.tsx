@@ -6,132 +6,69 @@ const ParentsSection = () => {
   const { isDarkMode } = useTheme();
 
   return (
-    <section className={`py-20 relative overflow-hidden transition-all duration-1000 ${
-      isDarkMode
-        ? 'bg-gradient-to-b from-purple-900 to-pink-900'
-        : 'bg-gradient-to-b from-purple-50 to-pink-50'
-    }`}>
-      {/* Background Effects */}
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=%2260%22 height=%2260%22 viewBox=%220 0 60 60%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg fill=%22%23ffffff%22 fill-opacity=%220.02%22%3E%3Ccircle cx=%2230%22 cy=%2230%22 r=%222%22/%3E%3C/g%3E%3C/svg%3E')] opacity-30"></div>
-      
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="text-center mb-16">
-          <h2 className={`text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent`}>
-            Meet My Mumma & Dada 👨‍👩‍👧
-          </h2>
-          <p className={`text-lg md:text-xl ${
-            isDarkMode ? 'text-white/80' : 'text-purple-700'
-          }`}>
-            The amazing people who made this celebration possible! 💜
-          </p>
-        </div>
-
-        <div className="max-w-4xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Mumma */}
-            <div className={`backdrop-blur-xl rounded-3xl p-8 border transition-all duration-300 hover:scale-105 group ${
-              isDarkMode
-                ? 'bg-white/10 border-white/20 hover:bg-white/15'
-                : 'bg-white/80 border-purple-200 hover:bg-white/90'
-            }`}>
-              <div className="text-center">
-                <div className="relative inline-block mb-6">
-                  <div className="absolute inset-0 bg-gradient-to-r from-pink-400 to-purple-400 rounded-full blur-lg opacity-50 group-hover:opacity-75 transition-opacity duration-300 animate-pulse"></div>
-                  <img
-                    src="https://images.pexels.com/photos/1181263/pexels-photo-1181263.jpeg?auto=compress&cs=tinysrgb&w=200&h=200"
-                    alt="Mumma"
-                    className="relative w-32 h-32 rounded-full object-cover border-4 border-white/20 shadow-2xl group-hover:scale-110 transition-transform duration-300"
+    <section className="py-16 bg-gradient-to-b from-pink-100 to-purple-100 dark:from-pink-900 dark:to-purple-900 transition-all duration-700">
+      <div className="container mx-auto px-4 max-w-4xl text-center">
+        <h2 className="text-3xl md:text-4xl font-bold mb-8 bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
+          👨‍👩‍👧 Mummy & Papa 👨‍👩‍👧
+        </h2>
+        <div className="flex flex-col md:flex-row items-center justify-center gap-8 mb-6">
+          {/* Mummy */}
+          <div className="flex-1 flex flex-col items-center group">
+            <div className="relative">
+              <img
+                src="/parents/Mummy.jpg"
+                alt="Mummy"
+                className="w-48 h-48 md:w-64 md:h-64 object-cover rounded-2xl shadow-lg border-4 border-pink-200 dark:border-pink-700 mb-4 transition-all duration-300 group-hover:shadow-pink-400/60 group-hover:scale-105 group-hover:border-pink-400 group-hover:ring-8 group-hover:ring-pink-300/40"
+              />
+              {/* Sparkles */}
+              <div className="absolute inset-0 pointer-events-none">
+                {[...Array(6)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="absolute w-2 h-2 bg-pink-300 rounded-full opacity-70 animate-ping"
+                    style={{
+                      top: `${Math.random() * 100}%`,
+                      left: `${Math.random() * 100}%`,
+                      animationDelay: `${Math.random() * 1.5}s`,
+                      animationDuration: '1.5s',
+                    }}
                   />
-                  
-                  {/* Sparkle border */}
-                  <div className="absolute inset-0 rounded-full border-2 border-dashed border-pink-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-spin-slow"></div>
-                  
-                  {/* Floating hearts */}
-                  <div className="absolute -top-2 -right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <Heart className="w-6 h-6 text-pink-400 animate-bounce" />
-                  </div>
-                </div>
-                
-                <h3 className={`text-2xl font-bold mb-2 ${
-                  isDarkMode ? 'text-white' : 'text-purple-800'
-                }`}>
-                  Priya Sharma
-                </h3>
-                <p className={`text-sm ${
-                  isDarkMode ? 'text-white/70' : 'text-purple-600'
-                }`}>
-                  The sweetest mumma who makes the best birthday cakes! 🎂
-                </p>
+                ))}
               </div>
             </div>
-
-            {/* Dada */}
-            <div className={`backdrop-blur-xl rounded-3xl p-8 border transition-all duration-300 hover:scale-105 group ${
-              isDarkMode
-                ? 'bg-white/10 border-white/20 hover:bg-white/15'
-                : 'bg-white/80 border-purple-200 hover:bg-white/90'
-            }`}>
-              <div className="text-center">
-                <div className="relative inline-block mb-6">
-                  <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full blur-lg opacity-50 group-hover:opacity-75 transition-opacity duration-300 animate-pulse"></div>
-                  <img
-                    src="https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=200&h=200"
-                    alt="Dada"
-                    className="relative w-32 h-32 rounded-full object-cover border-4 border-white/20 shadow-2xl group-hover:scale-110 transition-transform duration-300"
+            <span className="text-lg font-semibold text-pink-700 dark:text-pink-200">Mummy</span>
+          </div>
+          {/* Papa */}
+          <div className="flex-1 flex flex-col items-center group">
+            <div className="relative">
+              <img
+                src="/parents/Papa.jpg"
+                alt="Papa"
+                className="w-48 h-48 md:w-64 md:h-64 object-cover rounded-2xl shadow-lg border-4 border-purple-200 dark:border-purple-700 mb-4 transition-all duration-300 group-hover:shadow-purple-400/60 group-hover:scale-105 group-hover:border-purple-400 group-hover:ring-8 group-hover:ring-purple-300/40"
+              />
+              {/* Sparkles */}
+              <div className="absolute inset-0 pointer-events-none">
+                {[...Array(6)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="absolute w-2 h-2 bg-purple-300 rounded-full opacity-70 animate-ping"
+                    style={{
+                      top: `${Math.random() * 100}%`,
+                      left: `${Math.random() * 100}%`,
+                      animationDelay: `${Math.random() * 1.5}s`,
+                      animationDuration: '1.5s',
+                    }}
                   />
-                  
-                  {/* Sparkle border */}
-                  <div className="absolute inset-0 rounded-full border-2 border-dashed border-purple-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-spin-slow"></div>
-                  
-                  {/* Floating hearts */}
-                  <div className="absolute -top-2 -left-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <Heart className="w-6 h-6 text-purple-400 animate-bounce" style={{ animationDelay: '0.5s' }} />
-                  </div>
-                </div>
-                
-                <h3 className={`text-2xl font-bold mb-2 ${
-                  isDarkMode ? 'text-white' : 'text-purple-800'
-                }`}>
-                  Rajesh Sharma
-                </h3>
-                <p className={`text-sm ${
-                  isDarkMode ? 'text-white/70' : 'text-purple-600'
-                }`}>
-                  The coolest dada who supports all my K-pop dreams! 🎵
-                </p>
+                ))}
               </div>
             </div>
-          </div>
-
-          {/* Thank you message */}
-          <div className={`mt-12 text-center backdrop-blur-xl rounded-3xl p-6 border ${
-            isDarkMode
-              ? 'bg-white/10 border-white/20'
-              : 'bg-white/80 border-purple-200'
-          }`}>
-            <p className={`text-lg ${
-              isDarkMode ? 'text-white/90' : 'text-purple-700'
-            }`} style={{ fontFamily: 'cursive' }}>
-              Thank you Mumma & Dada for making my Sweet Sixteen dreams come true! 💜✨
-            </p>
+            <span className="text-lg font-semibold text-purple-700 dark:text-purple-200">Papa</span>
           </div>
         </div>
+        <p className="text-xl md:text-2xl text-purple-800 dark:text-white/80 font-medium mt-4">
+          Thank you for your endless love, support, and guidance! 💖
+        </p>
       </div>
-
-      <style jsx>{`
-        @keyframes spin-slow {
-          from {
-            transform: rotate(0deg);
-          }
-          to {
-            transform: rotate(360deg);
-          }
-        }
-        
-        .animate-spin-slow {
-          animation: spin-slow 8s linear infinite;
-        }
-      `}</style>
     </section>
   );
 };
